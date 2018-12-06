@@ -1,6 +1,8 @@
 #ifndef __PWM_H__
 #define __PWM_H__
 
+#include "c_types.h"
+
 /*pwm.h: function and macro definition of PWM API , driver level */
 /*user_light.h: user interface for light API, user level*/
 /*user_light_adj: API for color changing and lighting effects, user level*/

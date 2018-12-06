@@ -22,6 +22,7 @@
 #include "gizwits_product.h"
 #include "driver/hal_key.h"
 #include "driver/hal_temp_hum.h"
+#include "driver/RGB_light.h"
 #if ESP_PLATFORM
 #include "user_esp_platform.h"
 #endif
@@ -210,6 +211,11 @@ void ICACHE_FLASH_ATTR user_init(void)
     keyInit();
 
     gpioInit();
+
+    RGB_light_init();  // RGB初始化
+    RGB_light_set_period(500);  // 设置周期
+    RGB_light_set_color(0, 0, 0);  // 关闭RGB
+
 
     dh11Init();
 

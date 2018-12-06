@@ -19,6 +19,7 @@
 #include "driver/hal_key.h"
 
 #include "driver/hal_temp_hum.h"
+#include "driver/RGB_light.h"
 
 /** User area The current device state structure */
 dataPoint_t currentDataPoint;
@@ -26,6 +27,8 @@ dataPoint_t currentDataPoint;
 bool STA[2] = {0};  // 用于存储继电器和大功率LED状态, 初始化为关闭状态
 
 uint8_t time_updata = 0;
+
+uint32_t mode_Cloud_data[4] = {0};  // 云端数据缓存  0模式 1R 2G 3B
 
 /**@name Gizwits User Interface
 * @{
@@ -98,30 +101,39 @@ int8_t ICACHE_FLASH_ATTR gizwitsEventProcess(eventInfo_t *info, uint8_t *data, u
             {
             case LED_Color_VALUE0:
                 //user handle
+            	mode_Cloud_data[0] = 0;  // 关闭
                 break;
             case LED_Color_VALUE1:
                 //user handle
+            	mode_Cloud_data[0] = 1;  // 自定义
                 break;
             case LED_Color_VALUE2:
                 //user handle
+            	mode_Cloud_data[0] = 2;  // 设置红色
                 break;
             case LED_Color_VALUE3:
                 //user handle
+            	mode_Cloud_data[0] = 3;  // 设置绿色
                 break;
             case LED_Color_VALUE4:
                 //user handle
+            	mode_Cloud_data[0] = 4;  // 设置蓝色
                 break;
             case LED_Color_VALUE5:
                 //user handle
+            	mode_Cloud_data[0] = 5;  // 设置黄色
                 break;
             case LED_Color_VALUE6:
                 //user handle
+            	mode_Cloud_data[0] = 6;  // 设置紫色
                 break;
             case LED_Color_VALUE7:
                 //user handle
+            	mode_Cloud_data[0] = 7;  // 设置粉色
                 break;
             case LED_Color_VALUE8:
                 //user handle
+            	mode_Cloud_data[0] = 8;  // 设置白色
                 break;
             default:
                 break;
@@ -132,16 +144,31 @@ int8_t ICACHE_FLASH_ATTR gizwitsEventProcess(eventInfo_t *info, uint8_t *data, u
             currentDataPoint.valueLED_R= dataPointPtr->valueLED_R;
             GIZWITS_LOG("Evt:EVENT_LED_R %d\n",currentDataPoint.valueLED_R);
             //user handle
+            mode_Cloud_data[1] = currentDataPoint.valueLED_R;  // 红色
+            if (mode_Cloud_data[1] != 1)
+            {
+            	mode_Cloud_data[0] = 1;  // 自定义
+            }
             break;
         case EVENT_LED_G:
             currentDataPoint.valueLED_G= dataPointPtr->valueLED_G;
             GIZWITS_LOG("Evt:EVENT_LED_G %d\n",currentDataPoint.valueLED_G);
             //user handle
+            mode_Cloud_data[2] = currentDataPoint.valueLED_G;  // 绿色
+            if (mode_Cloud_data[2] != 1)
+            {
+            	mode_Cloud_data[0] = 1;  // 自定义
+            }
             break;
         case EVENT_LED_B:
             currentDataPoint.valueLED_B= dataPointPtr->valueLED_B;
             GIZWITS_LOG("Evt:EVENT_LED_B %d\n",currentDataPoint.valueLED_B);
             //user handle
+            mode_Cloud_data[3] = currentDataPoint.valueLED_B;  // 蓝色
+			if (mode_Cloud_data[3] != 1)
+			{
+				mode_Cloud_data[0] = 1;  // 自定义
+			}
             break;
 
         case WIFI_SOFTAP:
@@ -220,7 +247,85 @@ void ICACHE_FLASH_ATTR userHandle(void)
 	{
 		time_updata++;
 	}
-	 
+
+	switch(mode_Cloud_data[0])
+	{
+		case 0 :
+			RGB_light_set_color(0,0,0);//关闭灯
+			currentDataPoint.valueLED_Color = 0;
+			currentDataPoint.valueLED_R = 0;
+			currentDataPoint.valueLED_G = 0;
+			currentDataPoint.valueLED_B = 0;
+			break;
+
+		case 1 :
+			RGB_light_set_color(mode_Cloud_data[1],mode_Cloud_data[2],mode_Cloud_data[3]);//自定义
+			currentDataPoint.valueLED_Color = 1;
+			currentDataPoint.valueLED_R = mode_Cloud_data[1];
+			currentDataPoint.valueLED_G = mode_Cloud_data[2];
+			currentDataPoint.valueLED_B = mode_Cloud_data[3];
+			break;
+
+		case 2 :
+			RGB_light_set_color(255,0,0);//红色
+			currentDataPoint.valueLED_Color = 2;
+			currentDataPoint.valueLED_R = 255;
+			currentDataPoint.valueLED_G = 0;
+			currentDataPoint.valueLED_B = 0;
+			break;
+
+		case 3 :
+			RGB_light_set_color(0,255,0);//绿色
+			currentDataPoint.valueLED_Color = 3;
+			currentDataPoint.valueLED_R = 0;
+			currentDataPoint.valueLED_G = 255;
+			currentDataPoint.valueLED_B = 0;
+			break;
+
+		case 4 :
+			RGB_light_set_color(0,0,255);//蓝色
+			currentDataPoint.valueLED_Color = 4;
+			currentDataPoint.valueLED_R = 0;
+			currentDataPoint.valueLED_G = 0;
+			currentDataPoint.valueLED_B = 255;
+			break;
+
+		case 5 :
+			RGB_light_set_color(255,255,0);//黄色
+			currentDataPoint.valueLED_Color = 5;
+			currentDataPoint.valueLED_R = 255;
+			currentDataPoint.valueLED_G = 255;
+			currentDataPoint.valueLED_B = 0;
+			break;
+
+		case 6 :
+			RGB_light_set_color(255,0,255);//紫色
+			currentDataPoint.valueLED_Color = 6;
+			currentDataPoint.valueLED_R = 255;
+			currentDataPoint.valueLED_G = 0;
+			currentDataPoint.valueLED_B = 255;
+			break;
+
+		case 7 :
+			RGB_light_set_color(255,52,179);//粉色（估计不是粉色）
+			currentDataPoint.valueLED_Color = 7;
+			currentDataPoint.valueLED_R = 255;
+			currentDataPoint.valueLED_G = 52;
+			currentDataPoint.valueLED_B = 179;
+			break;
+
+		case 8 :
+			RGB_light_set_color(255,255,255);//白色
+			currentDataPoint.valueLED_Color = 8;
+			currentDataPoint.valueLED_R = 255;
+			currentDataPoint.valueLED_G = 255;
+			currentDataPoint.valueLED_B = 255;
+			break;
+
+		default:
+			break;
+	}
+
     system_os_post(USER_TASK_PRIO_2, SIG_UPGRADE_DATA, 0);
 }
 
