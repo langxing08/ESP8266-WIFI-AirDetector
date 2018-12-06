@@ -51,6 +51,8 @@ extern "C" {
 /** User area The current device state structure */
 extern dataPoint_t currentDataPoint;
 
+extern bool STA[2];  // 继电器和大功率LED标志位
+
 /** User area data point initialization */
 void userInit(void);
 

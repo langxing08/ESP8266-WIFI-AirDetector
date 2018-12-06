@@ -21,6 +21,10 @@
 /** User area The current device state structure */
 dataPoint_t currentDataPoint;
 
+bool STA[2] = {0};  // 用于存储继电器和大功率LED状态, 初始化为关闭状态
+
+uint8_t time_updata = 0;
+
 /**@name Gizwits User Interface
 * @{
 */
@@ -62,10 +66,12 @@ int8_t ICACHE_FLASH_ATTR gizwitsEventProcess(eventInfo_t *info, uint8_t *data, u
             if(0x01 == currentDataPoint.valueswitch_led)
             {
                 //user handle
+            	STA[0] = 1;  // 打开大功率LED
             }
             else
             {
                 //user handle
+            	STA[0] = 0;  // 关闭大功率LED
             }
             break;
         case EVENT_switch_relay :
@@ -74,10 +80,12 @@ int8_t ICACHE_FLASH_ATTR gizwitsEventProcess(eventInfo_t *info, uint8_t *data, u
             if(0x01 == currentDataPoint.valueswitch_relay)
             {
                 //user handle
+            	STA[1] = 1;  // 打开继电器
             }
             else
             {
                 //user handle
+            	STA[1] = 0;  // 关闭继电器
             }
             break;
 
@@ -194,6 +202,20 @@ void ICACHE_FLASH_ATTR userHandle(void)
     currentDataPoint.valueHumidity = ;//Add Sensor Data Collection
 
     */
+	GPIO_OUTPUT_SET(GPIO_ID_PIN(4), !STA[0]);  // 大功率LED开关, 低电平有效, 取反操作
+	GPIO_OUTPUT_SET(GPIO_ID_PIN(5), !STA[1]);  // 继电器开关, 低电平有效, 取反操作
+
+	if (20 == time_updata)  // 定时50ms*20, 修改定时器后不改变上报频率
+	{
+		time_updata = 0;
+
+		currentDataPoint.valueswitch_led = STA[0];  // 大功率LED开关状态上报
+		currentDataPoint.valueswitch_relay = STA[1];  // 继电器开关状态上报
+	}
+	else
+	{
+		time_updata++;
+	}
 	 
     system_os_post(USER_TASK_PRIO_2, SIG_UPGRADE_DATA, 0);
 }

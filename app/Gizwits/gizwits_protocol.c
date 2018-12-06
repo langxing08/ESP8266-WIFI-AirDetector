@@ -37,7 +37,7 @@ LOCAL os_event_t gizwitsTaskQueue[gizwitsTaskQueueLen];         ///< Protocol me
 /**@name User timers related parameters
 * @{
 */
-#define USER_TIME_MS 1000                                                   ///< Timing time in milliseconds
+#define USER_TIME_MS 50                                                     ///< Timing time in milliseconds
 LOCAL os_timer_t userTimer;                                                 ///< User timer structure
 
 /** Timer related parameters */ 

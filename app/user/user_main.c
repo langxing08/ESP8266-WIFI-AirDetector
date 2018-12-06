@@ -46,9 +46,9 @@ unsigned int default_private_key_len = 0;
 #define KEY_0_IO_MUX                            PERIPHS_IO_MUX_GPIO0_U      ///< ESP8266 GPIO function
 #define KEY_0_IO_NUM                            0                           ///< ESP8266 GPIO number
 #define KEY_0_IO_FUNC                           FUNC_GPIO0                  ///< ESP8266 GPIO name
-#define KEY_1_IO_MUX                            PERIPHS_IO_MUX_MTMS_U       ///< ESP8266 GPIO function
-#define KEY_1_IO_NUM                            14                          ///< ESP8266 GPIO number
-#define KEY_1_IO_FUNC                           FUNC_GPIO14                 ///< ESP8266 GPIO name
+#define KEY_1_IO_MUX                            PERIPHS_IO_MUX_MTDI_U       ///< ESP8266 GPIO function
+#define KEY_1_IO_NUM                            12                          ///< ESP8266 GPIO number
+#define KEY_1_IO_FUNC                           FUNC_GPIO12                 ///< ESP8266 GPIO name
 LOCAL key_typedef_t * singleKey[GPIO_KEY_NUM];                              ///< Defines a single key member array pointer
 LOCAL keys_typedef_t keys;                                                  ///< Defines the overall key module structure pointer    
 /**@} */
@@ -60,9 +60,15 @@ LOCAL keys_typedef_t keys;                                                  ///<
 */
 LOCAL void ICACHE_FLASH_ATTR key1ShortPress(void)
 {
-    GIZWITS_LOG("#### KEY1 short press ,Production Mode\n");
-    
-    gizwitsSetMode(WIFI_PRODUCTION_TEST);
+//    GIZWITS_LOG("#### KEY1 short press ,Production Mode\n");
+//
+//    gizwitsSetMode(WIFI_PRODUCTION_TEST);
+
+    // 短按KEY1, 大功率LED状态控制
+    STA[0] = !STA[0];
+
+    GIZWITS_LOG("\r\n#### key1 short press, High-power-LED %s.\r\n",
+    		STA[0] ? "On" : "Off");
 }
 
 /**
@@ -72,9 +78,14 @@ LOCAL void ICACHE_FLASH_ATTR key1ShortPress(void)
 */
 LOCAL void ICACHE_FLASH_ATTR key1LongPress(void)
 {
-    GIZWITS_LOG("#### key1 long press, default setup\n");
-    
-    gizwitsSetMode(WIFI_RESET_MODE);
+//    GIZWITS_LOG("#### key1 long press, default setup\n");
+//
+//    gizwitsSetMode(WIFI_RESET_MODE);
+
+    // 长按KEY1, SoftAP模式
+    GIZWITS_LOG("\r\n#### key1 long press, soft ap mode\r\n");
+
+    gizwitsSetMode(WIFI_SOFTAP_MODE);
 }
 
 /**
@@ -84,9 +95,15 @@ LOCAL void ICACHE_FLASH_ATTR key1LongPress(void)
 */
 LOCAL void ICACHE_FLASH_ATTR key2ShortPress(void)
 {
-    GIZWITS_LOG("#### key2 short press, soft ap mode \n");
+//    GIZWITS_LOG("#### key2 short press, soft ap mode \n");
+//
+//    gizwitsSetMode(WIFI_SOFTAP_MODE);
 
-    gizwitsSetMode(WIFI_SOFTAP_MODE);
+    // 短按KEY2, 继电器开关控制
+    STA[1] = !STA[1];
+
+    GIZWITS_LOG("\r\n#### key2 short press, Relay %s.\r\n",
+    		STA[1] ? "On" : "Off");
 }
 
 /**
@@ -96,7 +113,8 @@ LOCAL void ICACHE_FLASH_ATTR key2ShortPress(void)
 */
 LOCAL void ICACHE_FLASH_ATTR key2LongPress(void)
 {
-    GIZWITS_LOG("#### key2 long press, airlink mode\n");
+	// 长按KEY2, AirLink模式
+    GIZWITS_LOG("\r\n#### key2 long press, airlink mode\r\n");
     
     gizwitsSetMode(WIFI_AIRLINK_MODE);
 }
@@ -114,6 +132,24 @@ LOCAL void ICACHE_FLASH_ATTR keyInit(void)
                                 key2LongPress, key2ShortPress);
     keys.singleKey = singleKey;
     keyParaInit(&keys);
+}
+
+/**
+* Gpio to initialize
+* @param none
+* @return none
+*/
+LOCAL void ICACHE_FLASH_ATTR gpioInit(void)
+{
+	// 配置大功率LED管脚为输出
+	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO4_U, FUNC_GPIO4);
+	GPIO_DIS_OUTPUT(GPIO_ID_PIN(4));
+	GPIO_OUTPUT_SET(GPIO_ID_PIN(4), 1);  // 输出高电平
+
+	// 配置继电器管脚为输出
+	PIN_FUNC_SELECT(PERIPHS_IO_MUX_GPIO5_U, FUNC_GPIO5);
+	GPIO_DIS_OUTPUT(GPIO_ID_PIN(5));
+	GPIO_OUTPUT_SET(GPIO_ID_PIN(5), 1);  // 输出高电平
 }
 
 /**
@@ -171,6 +207,8 @@ void ICACHE_FLASH_ATTR user_init(void)
     }
 
     keyInit();
+
+    gpioInit();
 
     gizwitsInit();  
 
