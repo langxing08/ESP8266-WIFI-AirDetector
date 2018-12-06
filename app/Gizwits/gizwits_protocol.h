@@ -9,7 +9,7 @@
 *
 * @note         机智云.只为智能硬件而生
 *               Gizwits Smart Cloud  for Smart Products
-*               链接|增值ֵ|开放|中立|安全|自有|自由|生态
+*               链接|增值|开放|中立|安全|自有|自由|生态
 *               www.gizwits.com
 *
 ***********************************************************/
@@ -129,15 +129,15 @@
 
 typedef enum
 {
-    LED_Color_VALUE0 = 0,//关闭
-    LED_Color_VALUE1 = 1,//自定义
-    LED_Color_VALUE2 = 2,//红色
-    LED_Color_VALUE3 = 3,//绿色
-    LED_Color_VALUE4 = 4,//蓝色
-    LED_Color_VALUE5 = 5,//黄色
-    LED_Color_VALUE6 = 6,//紫色
-    LED_Color_VALUE7 = 7,//粉色
-    LED_Color_VALUE8 = 8,//白色
+    LED_Color_VALUE0 = 0,//鍏抽棴
+    LED_Color_VALUE1 = 1,//鑷畾涔�
+    LED_Color_VALUE2 = 2,//绾㈣壊
+    LED_Color_VALUE3 = 3,//缁胯壊
+    LED_Color_VALUE4 = 4,//钃濊壊
+    LED_Color_VALUE5 = 5,//榛勮壊
+    LED_Color_VALUE6 = 6,//绱壊
+    LED_Color_VALUE7 = 7,//绮夎壊
+    LED_Color_VALUE8 = 8,//鐧借壊
     LED_Color_VALUE_MAX,
 } LED_Color_ENUM_T;
 
