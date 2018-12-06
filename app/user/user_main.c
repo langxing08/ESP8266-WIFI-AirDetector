@@ -21,6 +21,7 @@
 #include "user_webserver.h"
 #include "gizwits_product.h"
 #include "driver/hal_key.h"
+#include "driver/hal_temp_hum.h"
 #if ESP_PLATFORM
 #include "user_esp_platform.h"
 #endif
@@ -209,6 +210,8 @@ void ICACHE_FLASH_ATTR user_init(void)
     keyInit();
 
     gpioInit();
+
+    dh11Init();
 
     gizwitsInit();  
 

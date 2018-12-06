@@ -18,6 +18,8 @@
 #include "gizwits_product.h"
 #include "driver/hal_key.h"
 
+#include "driver/hal_temp_hum.h"
+
 /** User area The current device state structure */
 dataPoint_t currentDataPoint;
 
@@ -211,6 +213,8 @@ void ICACHE_FLASH_ATTR userHandle(void)
 
 		currentDataPoint.valueswitch_led = STA[0];  // 大功率LED开关状态上报
 		currentDataPoint.valueswitch_relay = STA[1];  // 继电器开关状态上报
+
+		dh11SensorTest();  // 获取温度并上报
 	}
 	else
 	{
@@ -244,6 +248,15 @@ void ICACHE_FLASH_ATTR userInit(void)
    		currentDataPoint.valueTemperature = ;
    		currentDataPoint.valueHumidity = ;
     */
+	currentDataPoint.valueswitch_led = 0;
+	currentDataPoint.valueswitch_relay = 0;
+	currentDataPoint.valueLED_Color = 0;
+	currentDataPoint.valueLED_R = 0;
+	currentDataPoint.valueLED_G = 0;
+	currentDataPoint.valueLED_B = 0;
+	currentDataPoint.valueTemperature = 0;
+	currentDataPoint.valueHumidity = 0;
+
 }
 
 
