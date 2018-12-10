@@ -210,7 +210,7 @@ void ICACHE_FLASH_ATTR user_init(void)
 
     keyInit();
 
-//    gpioInit();
+    gpioInit();
 
     RGB_light_init();  // RGB初始化
     RGB_light_set_period(500);  // 设置周期

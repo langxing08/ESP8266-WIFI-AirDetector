@@ -231,8 +231,8 @@ void ICACHE_FLASH_ATTR userHandle(void)
     currentDataPoint.valueHumidity = ;//Add Sensor Data Collection
 
     */
-//	GPIO_OUTPUT_SET(GPIO_ID_PIN(4), !STA[0]);  // 大功率LED开关, 低电平有效, 取反操作
-//	GPIO_OUTPUT_SET(GPIO_ID_PIN(5), !STA[1]);  // 继电器开关, 低电平有效, 取反操作
+	GPIO_OUTPUT_SET(GPIO_ID_PIN(4), !STA[0]);  // 大功率LED开关, 低电平有效, 取反操作
+	GPIO_OUTPUT_SET(GPIO_ID_PIN(5), !STA[1]);  // 继电器开关, 低电平有效, 取反操作
 
 	if (20 == time_updata)  // 定时50ms*20, 修改定时器后不改变上报频率
 	{
