@@ -205,11 +205,31 @@ uint8_t ICACHE_FLASH_ATTR dh11Init(void)
 
 void ICACHE_FLASH_ATTR dh11SensorTest(void)
 {
+#if 0
     uint8_t curTem = 0;
 	uint8_t curHum = 0;
     /* 温度测试 */
-    dht11ReadData(&curTem, &curHum); 
+    dht11ReadData(&curTem, &curHum);
     currentDataPoint.valueTemperature = curTem;//温度
     currentDataPoint.valueHumidity = curHum;//湿度
-    GIZWITS_LOG("Temperature : %d , Humidity : %d", curTem, curHum);
+    GIZWITS_LOG("Temperature : %d , Humidity : %d\r\n", curTem, curHum);
+#else
+    uint8 ret = 1;
+    uint8_t curTem = 0;
+	uint8_t curHum = 0;
+    /* 温度测试 */
+	ret = dh11Read(&curTem, &curHum);
+
+	if (0 == ret)
+	{
+		currentDataPoint.valueTemperature = curTem;//温度
+		currentDataPoint.valueHumidity = curHum;//湿度
+		GIZWITS_LOG("Temperature : %d , Humidity : %d\n", curTem, curHum);
+	}
+	else
+	{
+		GIZWITS_LOG("@@@@ dh11Read error ! \n");
+	}
+
+#endif
 }
