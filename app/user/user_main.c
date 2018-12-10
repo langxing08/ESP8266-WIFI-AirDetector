@@ -180,9 +180,9 @@ void ICACHE_FLASH_ATTR user_init(void)
     wifi_station_set_auto_connect(1);
     wifi_set_sleep_type(NONE_SLEEP_T);//set none sleep mode
     espconn_tcp_set_max_con(10);
-    uart_init_3(9600,115200);
-    UART_SetPrintPort(1);
-    GIZWITS_LOG( "---------------SDK version:%s--------------\n", system_get_sdk_version());
+    uart_init_3(115200,115200);
+    UART_SetPrintPort(0);
+    GIZWITS_LOG( "\r\n\r\n---------------SDK version:%s--------------\n", system_get_sdk_version());
     GIZWITS_LOG( "system_get_free_heap_size=%d\n",system_get_free_heap_size());
 
     struct rst_info *rtc_info = system_get_rst_info();
@@ -210,7 +210,7 @@ void ICACHE_FLASH_ATTR user_init(void)
 
     keyInit();
 
-    gpioInit();
+//    gpioInit();
 
     RGB_light_init();  // RGB初始化
     RGB_light_set_period(500);  // 设置周期
